@@ -1,0 +1,144 @@
+﻿<Window x:Class="lab6.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:lab6"
+        mc:Ignorable="d"
+        Title="Детективное Агентство" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <TabControl>
+            <TabItem Header="Виды правонарушений">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Для кнопок и поля ввода -->
+                        <RowDefinition Height="*"/>
+                        <!-- Для списка -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Панель для добавления/редактирования -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <Label Content="Название:" VerticalAlignment="Center"/>
+                        <TextBox x:Name="txtOffenseTypeName" Width="200" Margin="5,0" VerticalAlignment="Center"/>
+                        <Button x:Name="btnAddOffenseType" Content="Добавить" Width="80" Margin="5,0" Click="BtnAddOffenseType_Click"/>
+                        <Button x:Name="btnUpdateOffenseType" Content="Сохранить" Width="80" Margin="5,0" Click="BtnUpdateOffenseType_Click" IsEnabled="False"/>
+                        <Button x:Name="btnDeleteOffenseType" Content="Удалить" Width="80" Margin="5,0" Click="BtnDeleteOffenseType_Click" IsEnabled="False"/>
+                        <Button x:Name="btnClearOffenseTypeForm" Content="Очистить" Width="80" Margin="10,0,0,0" Click="BtnClearOffenseTypeForm_Click"/>
+                    </StackPanel>
+
+                    <!-- Список видов правонарушений -->
+                    <DataGrid Grid.Row="1" x:Name="dgOffenseTypes" AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single" SelectionChanged="DgOffenseTypes_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding OffenseTypeID}" Width="50"/>
+                            <DataGridTextColumn Header="Название правонарушения" Binding="{Binding Name}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Субъекты">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Форма для ввода/редактирования -->
+                        <ColumnDefinition Width="5"/>
+                        <!-- Разделитель -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Список субъектов -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Панель для добавления/редактирования Субъектов -->
+                    <StackPanel Grid.Column="0" Margin="0,0,5,0" Width="250">
+                        <TextBlock Text="Субъект:" FontWeight="Bold" Margin="0,0,0,5"/>
+                        <Label Content="Фамилия:"/>
+                        <TextBox x:Name="txtSubjectLastName" Margin="0,0,0,5"/>
+                        <Label Content="Имя:"/>
+                        <TextBox x:Name="txtSubjectFirstName" Margin="0,0,0,5"/>
+                        <Label Content="Заметки:"/>
+                        <TextBox x:Name="txtSubjectNotes" Margin="0,0,0,10" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button x:Name="btnAddSubject" Content="Добавить" Width="80" Margin="0,0,5,0" Click="BtnAddSubject_Click"/>
+                            <Button x:Name="btnUpdateSubject" Content="Сохранить" Width="80" Margin="0,0,5,0" Click="BtnUpdateSubject_Click" IsEnabled="False"/>
+                            <Button x:Name="btnDeleteSubject" Content="Удалить" Width="80" Margin="0,0,5,0" Click="BtnDeleteSubject_Click" IsEnabled="False"/>
+                        </StackPanel>
+                        <Button x:Name="btnClearSubjectForm" Content="Очистить форму" Margin="0,10,0,0" HorizontalAlignment="Stretch" Click="BtnClearSubjectForm_Click"/>
+                    </StackPanel>
+
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="LightGray"/>
+
+                    <!-- Список Субъектов -->
+                    <DataGrid Grid.Column="2" x:Name="dgSubjects" AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single" SelectionChanged="DgSubjects_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding SubjectID}" Width="50"/>
+                            <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}" Width="150*"/>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" Width="120*"/>
+                            <DataGridTextColumn Header="Заметки" Binding="{Binding Notes}" Width="200*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Расследования">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="300"/>
+                        <!-- Форма для ввода/редактирования -->
+                        <ColumnDefinition Width="5"/>
+                        <!-- Разделитель -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Список расследований -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Панель для добавления/редактирования Расследований -->
+                    <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0,0,5,0">
+                            <TextBlock Text="Расследование:" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <Label Content="Субъект:"/>
+                            <ComboBox x:Name="cmbInvestigationSubject" DisplayMemberPath="FullName" Margin="0,0,0,5"/>
+                            <Label Content="Вид правонарушения:"/>
+                            <ComboBox x:Name="cmbInvestigationOffenseType" DisplayMemberPath="Name" Margin="0,0,0,5"/>
+                            <Label Content="Дата правонарушения:"/>
+                            <DatePicker x:Name="dpInvestigationOffenseDate" Margin="0,0,0,5"/>
+                            <Label Content="Сумма вознаграждения:"/>
+                            <TextBox x:Name="txtInvestigationRewardAmount" Margin="0,0,0,5" PreviewTextInput="NumberValidationTextBox"/>
+                            <Label Content="Статус:"/>
+                            <TextBox x:Name="txtInvestigationStatus" Margin="0,0,0,5"/>
+                            <Label Content="Описание:"/>
+                            <TextBox x:Name="txtInvestigationDescription" Margin="0,0,0,10" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                                <Button x:Name="btnAddInvestigation" Content="Добавить" Width="80" Margin="0,0,5,0" Click="BtnAddInvestigation_Click"/>
+                                <Button x:Name="btnUpdateInvestigation" Content="Сохранить" Width="80" Margin="0,0,5,0" Click="BtnUpdateInvestigation_Click" IsEnabled="False"/>
+                                <Button x:Name="btnDeleteInvestigation" Content="Удалить" Width="80" Margin="0,0,5,0" Click="BtnDeleteInvestigation_Click" IsEnabled="False"/>
+                            </StackPanel>
+                            <Button x:Name="btnClearInvestigationForm" Content="Очистить форму" Margin="0,10,0,0" HorizontalAlignment="Stretch" Click="BtnClearInvestigationForm_Click"/>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="LightGray"/>
+
+                    <!-- Список Расследований -->
+                    <DataGrid Grid.Column="2" x:Name="dgInvestigations" AutoGenerateColumns="False" IsReadOnly="True"
+                              SelectionMode="Single" SelectionChanged="DgInvestigations_SelectionChanged">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding InvestigationID}" Width="50"/>
+                            <!-- Мы не можем напрямую биндить SubjectID к имени субъекта без доп. логики или ViewModel. -->
+                            <!-- Пока оставим ID, позже можно улучшить. Или создать нередактируемые колонки с именами. -->
+                            <DataGridTextColumn Header="ID Субъекта" Binding="{Binding SubjectID}" Width="Auto"/>
+                            <DataGridTextColumn Header="ID Вида" Binding="{Binding OffenseTypeID}" Width="Auto"/>
+                            <DataGridTextColumn Header="Дата" Binding="{Binding OffenseDate, StringFormat=d}" Width="100"/>
+                            <DataGridTextColumn Header="Вознаграждение" Binding="{Binding RewardAmount, StringFormat=C}" Width="120"/>
+                            <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="100*"/>
+                            <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="200*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
