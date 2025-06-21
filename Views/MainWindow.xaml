@@ -1,0 +1,93 @@
+﻿<!-- Файл: MainWindow.xaml
+     Описание: Главное окно приложения для управления расследованиями. -->
+<Window x:Class="InvestigationApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:InvestigationApp.ViewModels"
+        Title="Детективное Агентство" Height="600" Width="800" Background="LightGray">
+    <Window.DataContext>
+        <vm:MainViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <Button Command="{Binding LoadDataCommand}" Content="Загрузить данные" Width="120" Margin="5"/>
+            <Button Command="{Binding AddInvestigationCommand}" Content="Добавить" Width="100" Margin="5"/>
+            <Button Command="{Binding DeleteInvestigationCommand}" Content="Удалить" Width="100" Margin="5"/>
+            <Button Command="{Binding UpdateInvestigationCommand}" Content="Обновить" Width="100" Margin="5"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
+            <TextBlock Text="Поиск:" VerticalAlignment="Center" Margin="5"/>
+            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5"/>
+            <Button Command="{Binding SearchCommand}" Content="Найти" Width="80" Margin="5"/>
+        </StackPanel>
+        <!-- Панель фильтрации по вознаграждению -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5">
+            <TextBlock Text="Мин. вознаграждение:" VerticalAlignment="Center" Margin="5"/>
+            <TextBox Text="{Binding MinRewardAmount, UpdateSourceTrigger=PropertyChanged}" Width="100" Margin="5"/>
+            <Button Command="{Binding FilterByRewardCommand}" Content="Фильтр по возн." Width="120" Margin="5"/>
+        </StackPanel>
+        <!-- Панель фильтрации по типу нарушения -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="5">
+            <TextBlock Text="Тип нарушения:" VerticalAlignment="Center" Margin="5"/>
+            <ComboBox SelectedValue="{Binding SelectedOffenseTypeId, Mode=TwoWay}" Width="120" Margin="5" DisplayMemberPath="Name" SelectedValuePath="OffenseTypeID" ItemsSource="{Binding OffenseTypes}"/>
+            <Button Command="{Binding FilterByOffenseTypeCommand}" Content="Фильтр по типу" Width="120" Margin="5"/>
+        </StackPanel>
+        <!-- Панель редактирования (всегда видима) -->
+        <StackPanel Grid.Row="4" Margin="5" Orientation="Vertical">
+            <TextBlock Text="Редактирование расследования:" Margin="0,0,0,5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Дата:" Margin="5"/>
+                <DatePicker Grid.Row="0" Grid.Column="1" SelectedDate="{Binding SelectedInvestigation.OffenseDate, Mode=TwoWay}" Margin="5"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Вознаграждение:" Margin="5"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedInvestigation.RewardAmount, Mode=TwoWay, StringFormat=C}" Margin="5"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Описание:" Margin="5"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedInvestigation.Description, Mode=TwoWay}" Margin="5"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Субъект ID:" Margin="5"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedInvestigation.SubjectID, Mode=TwoWay}" Margin="5"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Тип правонарушения ID:" Margin="5"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectedInvestigation.OffenseTypeID, Mode=TwoWay}" Margin="5"/>
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="Статус:" Margin="5"/>
+                <ComboBox Grid.Row="5" Grid.Column="1" SelectedItem="{Binding SelectedInvestigation.Status, Mode=TwoWay}" Margin="5">
+                    <ComboBoxItem Content="Unknown"/>
+                    <ComboBoxItem Content="Open"/>
+                    <ComboBoxItem Content="Closed"/>
+                    <ComboBoxItem Content="InProgress"/>
+                </ComboBox>
+            </Grid>
+        </StackPanel>
+        <ListBox Grid.Row="5" Margin="5" ItemsSource="{Binding Investigations}" 
+                 SelectedItem="{Binding SelectedInvestigation}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding OffenseDate, StringFormat=dd.MM.yyyy}" Width="100" Margin="5"/>
+                        <TextBlock Text="{Binding RewardAmount, StringFormat=C}" Width="100" Margin="5"/>
+                        <TextBlock Text="{Binding Description}" Width="200" Margin="5"/>
+                        <TextBlock Text="{Binding Subjects.LastName}" Width="150" Margin="5"/>
+                        <TextBlock Text="{Binding Status}" Width="100" Margin="5"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Grid.Row="6" Command="{Binding ShowStatusCountsCommand}" Content="Показать статистику" Width="150" Margin="5" VerticalAlignment="Bottom"/>
+    </Grid>
+</Window>
